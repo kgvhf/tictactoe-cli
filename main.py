@@ -1,4 +1,5 @@
 import random
+from copy import deepcopy
 
 
 def print_board(board, max_width):
@@ -33,7 +34,7 @@ def win_check(board, player, n, row, col):
     return horizontal or vertical or diagonal_down or diagonal_up
 
 
-def vs_ai(board, n, possible_moves):
+def vs_bot(board, n, possible_moves, difficulty):
     max_width = len(str(n ** 2)) + 1
     while True:
         print_board(board, max_width)
@@ -61,10 +62,36 @@ def vs_ai(board, n, possible_moves):
             print("Draw! Board is full.")
             break
 
-        bot_num = random.choice(possible_moves)
+        # Bot move begins here
+        print("Bot is thinking...")
+        bot_num = -1
+        check = random.randint(0, 100)
+
+        # Medium difficulty - 50% chance of bot being easy, 50% chance being abyssal
+        if difficulty == 2:
+            if check <= 50:
+                difficulty = 0
+            else:
+                difficulty = 4
+        # Hard difficulty - 20% chance of bot being easy, 80% chance being abyssal
+        elif difficulty == 3:
+            if check <= 20:
+                difficulty = 0
+            else:
+                difficulty = 4
+
+        # Easy difficulty - Bot selects a random move
+        if difficulty == 0:
+            bot_num = random.choice(possible_moves)
+        # Abyssal difficulty - Bot utilizes minimax to find optimal move
+        elif difficulty == 4:
+            temp, bot_num = minimax(board, n, possible_moves, True)
+            if bot_num == -1:
+                print("Bot has forfeited! You won!")
+                break
+
         row = bot_num // n
         col = bot_num % n
-
         board[row][col] = 'X'
         possible_moves.remove(bot_num)
 
@@ -79,13 +106,100 @@ def vs_ai(board, n, possible_moves):
             break
 
 
+# Returns winning player (O or X), or D if draw
+def find_winner(board, n):
+    for i in range(n):
+        horizontal = True
+        for j in range(0, n - 1):
+            if board[i][j] == '.':
+                break
+            if board[i][j] != board[i][j + 1]:
+                horizontal = False
+        if horizontal:
+            return board[i][0]
+
+    for i in range(n):
+        vertical = True
+        for j in range(0, n - 1):
+            if board[j][i] == '.':
+                break
+            if board[j][i] != board[j + 1][i]:
+                vertical = False
+        if vertical:
+            return board[0][i]
+
+    diagonal_down = True
+    for i in range(0, n - 1):
+        if board[i][i] == '.':
+            break
+        if board[i][i] != board[i + 1][i + 1]:
+            diagonal_down = False
+    if diagonal_down:
+        return board[0][0]
+
+    diagonal_up = True
+    for i in range(0, n - 1):
+        if board[i][n - 1 - i] == '.':
+            break
+        if board[i][n - 1 - i] != board[i + 1][n - 2 - i]:
+            diagonal_up = False
+    if diagonal_up:
+        return board[0][n - 1]
+
+    return 'D'
+
+
+def minimax(board, n, possible_moves, maximizing_player):
+    best_move = -1
+    if not possible_moves:
+        winner = find_winner(board, n)
+        if winner == 'O':
+            return -1, best_move
+        elif winner == 'X':
+            return 1, best_move
+        else:
+            return 0, best_move
+
+    if maximizing_player:
+        value = -10
+        for move in possible_moves:
+            new_board = deepcopy(board)
+            new_possible = deepcopy(possible_moves)
+            row = move // n
+            col = move % n
+            new_board[row][col] = 'X'
+            new_possible.remove(move)
+            new_value, new_move = minimax(new_board, n, new_possible, False)
+            if new_value > value:
+                value = new_value
+                best_move = move
+
+        return value, best_move
+
+    else:
+        value = 10
+        for move in possible_moves:
+            new_board = deepcopy(board)
+            new_possible = deepcopy(possible_moves)
+            row = move // n
+            col = move % n
+            new_board[row][col] = 'O'
+            new_possible.remove(move)
+            new_value, new_move = minimax(new_board, n, new_possible, True)
+            if new_value < value:
+                value = new_value
+                best_move = move
+
+        return value, best_move
+
+
 def vs_player(board, n, possible_moves):
     max_width = len(str(n ** 2)) + 1
     player = 'O'
     while True:
         print_board(board, max_width)
         num = int(input("Player " + player + " - Input location: "))
-        if num < 0 or num >= (n**2):
+        if num < 0 or num >= (n ** 2):
             print("Please choose a valid location!")
             continue
 
@@ -131,14 +245,28 @@ def main():
             possible_moves.append(i * n + j)
         board.append(new_row)
 
-    print("Play with bot or another player?")
+    print("Select game mode:")
     while True:
-        play_type = int(input("Enter 1 for bot, 2 for multi-player: "))
+        print("1 - Easy bot")
+        print("2 - Medium bot")
+        print("3 - Hard bot")
+        print("4 - Abyssal bot (You're not expected to win!)")
+        print("5 - Multiplayer")
+        play_type = int(input("Your choice: "))
 
         if play_type == 1:
-            vs_ai(board, n, possible_moves)
+            vs_bot(board, n, possible_moves, 1)
             break
         elif play_type == 2:
+            vs_bot(board, n, possible_moves, 2)
+            break
+        elif play_type == 3:
+            vs_bot(board, n, possible_moves, 3)
+            break
+        elif play_type == 4:
+            vs_bot(board, n, possible_moves, 4)
+            break
+        elif play_type == 5:
             vs_player(board, n, possible_moves)
             break
         else:
