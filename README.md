@@ -19,7 +19,7 @@ Users can play with a bot of varying difficulties or play with another person lo
 
 Optimal bot is achieved through minimax.
 
-### Local multiplayer:
+### Local multiplayer
 
 Players take turns to play on the same machine.
 
