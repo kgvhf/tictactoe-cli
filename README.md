@@ -1,10 +1,10 @@
 # TicTacToe-CLI
 
-This is a tic-tac-toe game which is played on the command line. Developed on Python.
+A tic-tac-toe game which is played on the command line. Developed on Python.
 
 ## Getting Started
 
-Have python installed and run main.
+Have Python installed and run main.
 
 ## Features
 
@@ -29,7 +29,7 @@ Players take turns to play on the same machine.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
 ## Acknowledgments
 
