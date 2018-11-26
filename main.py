@@ -70,7 +70,7 @@ def vs_ai(board, n, possible_moves):
 
         if win_check(board, 'X', n, row, col):
             print_board(board, max_width)
-            print("You win!")
+            print("You lost!")
             break
 
         if not possible_moves:
