@@ -1,3 +1,6 @@
+import random
+
+
 def print_board(board, max_width):
     for row in range(len(board)):
         for col in range(len(board)):
@@ -48,17 +51,32 @@ def vs_ai(board, n, possible_moves):
         board[row][col] = 'O'
         possible_moves.remove(num)
 
+        if win_check(board, 'O', n, row, col):
+            print_board(board, max_width)
+            print("You win!")
+            break
+
         if not possible_moves:
             print_board(board, max_width)
             print("Draw! Board is full.")
             break
 
-        if win_check(board, 'O', n, row, col):
+        bot_num = random.choice(possible_moves)
+        row = bot_num // n
+        col = bot_num % n
+
+        board[row][col] = 'X'
+        possible_moves.remove(bot_num)
+
+        if win_check(board, 'X', n, row, col):
             print_board(board, max_width)
-            print("Player " + player + " wins!")
+            print("You win!")
             break
 
-        # To be added: bot moves
+        if not possible_moves:
+            print_board(board, max_width)
+            print("Draw! Board is full.")
+            break
 
 
 def vs_player(board, n, possible_moves):
@@ -114,14 +132,17 @@ def main():
         board.append(new_row)
 
     print("Play with bot or another player?")
-    play_type = int(input("Enter 1 for bot, 2 for multi-player: "))
+    while True:
+        play_type = int(input("Enter 1 for bot, 2 for multi-player: "))
 
-    if play_type == 1:
-        print("Sorry! Bot is not ready yet!")
-    elif play_type == 2:
-        vs_player(board, n, possible_moves)
-    else:
-        print("Invalid option! Game exiting...")
+        if play_type == 1:
+            vs_ai(board, n, possible_moves)
+            break
+        elif play_type == 2:
+            vs_player(board, n, possible_moves)
+            break
+        else:
+            print("Invalid option!")
 
 
 main()
