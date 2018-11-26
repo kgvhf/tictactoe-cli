@@ -5,59 +5,123 @@ def print_board(board, max_width):
         print()
 
 
-n = int(input("Input size of tic-tac-toe board: "))
-filled = 0
-board = []
-for i in range(n):
-    new_row = []
-    for j in range(n):
-        new_row.append(i * n + j)
-    board.append(new_row)
-max_width = len(str(n ** 2)) + 1
-print_board(board, max_width)
-
-player = 'O'
-while True:
-    num = int(input("Player " + player + " - Input location: "))
-    row = num // n
-    col = num % n
-    if board[row][col] == 'O' or board[row][col] == 'X':
-        print("Cannot replace player's piece")
-        continue
-
-    board[row][col] = player
-    filled += 1
-    print_board(board, max_width)
-
-    if filled == (n ** 2):
-        print("Draw! Board is full.")
-        break
-
-    horizontal_win = True
+def win_check(board, player, n, row, col):
+    horizontal, vertical, diagonal_down, diagonal_up = True, True, True, True
+    # Check for horizontal win
     for i in range(n):
         if board[row][i] != player:
-            horizontal_win = False
+            horizontal = False
 
-    vertical_win = True
+    # Check for vertical win
     for i in range(n):
         if board[i][col] != player:
-            vertical_win = False
+            vertical = False
 
-    diagonal_down_win = True
+    # check for downwards diagonal (i.e. top left to bottom right)
     for i in range(n):
         if board[i][i] != player:
-            diagonal_down_win = False
+            diagonal_down = False
 
-    diagonal_up_win = True
+    # Check for upwards diagonal (i.e. bottom left to top right)
     for i in range(n):
         if board[i][n - 1 - i] != player:
-            diagonal_up_win = False
+            diagonal_up = False
 
-    if horizontal_win or vertical_win or diagonal_down_win or diagonal_up_win:
-        print("Player " + player + " wins")
-        break
+    return horizontal or vertical or diagonal_down or diagonal_up
 
-    if player == 'O':
-        player = 'X'
+
+def vs_ai(board, n, possible_moves):
+    max_width = len(str(n ** 2)) + 1
+    while True:
+        print_board(board, max_width)
+        num = int(input("Player - Input location: "))
+        if num < 0 or num >= (n ** 2):
+            print("Please choose a valid location!")
+            continue
+
+        row = num // n
+        col = num % n
+        if board[row][col] == 'O' or board[row][col] == 'X':
+            print("Cannot replace a player's piece!")
+            continue
+
+        board[row][col] = 'O'
+        possible_moves.remove(num)
+
+        if not possible_moves:
+            print_board(board, max_width)
+            print("Draw! Board is full.")
+            break
+
+        if win_check(board, 'O', n, row, col):
+            print_board(board, max_width)
+            print("Player " + player + " wins!")
+            break
+
+        # To be added: bot moves
+
+
+def vs_player(board, n, possible_moves):
+    max_width = len(str(n ** 2)) + 1
+    player = 'O'
+    while True:
+        print_board(board, max_width)
+        num = int(input("Player " + player + " - Input location: "))
+        if num < 0 or num >= (n**2):
+            print("Please choose a valid location!")
+            continue
+
+        row = num // n
+        col = num % n
+        if board[row][col] == 'O' or board[row][col] == 'X':
+            print("Cannot replace a player's piece!")
+            continue
+
+        board[row][col] = player
+        possible_moves.remove(num)
+
+        if not possible_moves:
+            print_board(board, max_width)
+            print("Draw! Board is full.")
+            break
+
+        if win_check(board, player, n, row, col):
+            print_board(board, max_width)
+            print("Player " + player + " wins!")
+            break
+
+        if player == 'O':
+            player = 'X'
+        else:
+            player = 'O'
+
+
+def main():
+    while True:
+        n = int(input("Input size of tic-tac-toe board: "))
+        if n > 1:
+            break
+        else:
+            print("Board cannot be smaller than size 2!")
+
+    board = []
+    possible_moves = []
+    for i in range(n):
+        new_row = []
+        for j in range(n):
+            new_row.append(i * n + j)
+            possible_moves.append(i * n + j)
+        board.append(new_row)
+
+    print("Play with bot or another player?")
+    play_type = int(input("Enter 1 for bot, 2 for multi-player: "))
+
+    if play_type == 1:
+        print("Sorry! Bot is not ready yet!")
+    elif play_type == 2:
+        vs_player(board, n, possible_moves)
     else:
-        player = 'O'
+        print("Invalid option! Game exiting...")
+
+
+main()
