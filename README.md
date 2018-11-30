@@ -4,7 +4,7 @@ A tic-tac-toe game which is played on the command line. Developed on Python.
 
 ## Getting Started
 
-Have Python installed and run main.pu
+Have Python installed and run main.py
 
 ## Features
 
