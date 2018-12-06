@@ -80,8 +80,9 @@ def vs_bot(board, n, possible_moves, difficulty):
             else:
                 difficulty = 4
 
+        print(possible_moves)
         # Easy difficulty - Bot selects a random move
-        if difficulty == 0:
+        if difficulty == 1:
             bot_num = random.choice(possible_moves)
         # Abyssal difficulty - Bot utilizes minimax to find optimal move
         elif difficulty == 4:
