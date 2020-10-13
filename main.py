@@ -273,5 +273,8 @@ def main():
         else:
             print("Invalid option!")
 
+    print("Game over! Press return to close...")
+    input()
+
 
 main()
