@@ -38,7 +38,12 @@ def vs_bot(board, n, possible_moves, difficulty):
     max_width = len(str(n ** 2)) + 1
     while True:
         print_board(board, max_width)
-        num = int(input("Player - Input location: "))
+        
+        try:
+            num = int(input("Player - Input location: "))
+        except:
+            num = -1
+            
         if num < 0 or num >= (n ** 2):
             print("Please choose a valid location!")
             continue
@@ -199,7 +204,12 @@ def vs_player(board, n, possible_moves):
     player = 'O'
     while True:
         print_board(board, max_width)
-        num = int(input("Player " + player + " - Input location: "))
+        
+        try:
+            num = int(input("Player " + player + " - Input location: "))
+        except:            
+            num = -1
+        
         if num < 0 or num >= (n ** 2):
             print("Please choose a valid location!")
             continue
