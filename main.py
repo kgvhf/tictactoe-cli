@@ -212,15 +212,15 @@ def vs_player(board, n, possible_moves):
 
         board[row][col] = player
         possible_moves.remove(num)
+        
+        if win_check(board, player, n, row, col):
+            print_board(board, max_width)
+            print("Player " + player + " wins!")
+            break
 
         if not possible_moves:
             print_board(board, max_width)
             print("Draw! Board is full.")
-            break
-
-        if win_check(board, player, n, row, col):
-            print_board(board, max_width)
-            print("Player " + player + " wins!")
             break
 
         if player == 'O':
